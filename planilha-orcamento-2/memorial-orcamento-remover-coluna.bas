@@ -67,10 +67,10 @@ Sub removerColunas()
         colunaDescMemorialDeCalc = colunaNaoApagarMemorial - 3
 
         'Verificando se há algo a excluir
-        Dim verificarValorDaCelulaASerExcluida As String
-        verificarValorDaCelulaASerExcluida = Trim(CStr(memorial.Cells(25, i).Value))
+        Dim valorDaCelulaASerExcluida As String
+        valorDaCelulaASerExcluida = Trim(CStr(memorial.Cells(25, colunaDescMemorialDeCalc - 1).Value))
         
-        If StrComp(verificarValorDaCelulaASerExcluida, "QTD", vbTextCompare) = 0 Then
+        If StrComp(valorDaCelulaASerExcluida, "QTD", vbTextCompare) = 0 Then
             Exit Sub
         End If
 

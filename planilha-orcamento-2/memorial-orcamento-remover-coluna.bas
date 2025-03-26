@@ -66,6 +66,14 @@ Sub removerColunas()
         If colunaNaoApagarMemorial = 0 Then Err.Raise vbObjectError + 2, , "Não foi encontrada a coluna 'NÃO APAGAR' no MEMORIAL."
         colunaDescMemorialDeCalc = colunaNaoApagarMemorial - 3
 
+        'Verificando se há algo a excluir
+        Dim verificarValorDaCelulaASerExcluida As String
+        verificarValorDaCelulaASerExcluida = Trim(CStr(memorial.Cells(25, i).Value))
+        
+        If StrComp(verificarValorDaCelulaASerExcluida, "QTD", vbTextCompare) = 0 Then
+            Exit Sub
+        End If
+
         memorial.Columns(colunaDescMemorialDeCalc - 1).Delete Shift:=xlToLeft
     Next i
 

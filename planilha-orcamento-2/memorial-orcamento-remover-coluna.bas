@@ -38,42 +38,42 @@ Sub removerColunas()
     quantidadeDeColunasApagar = Application.InputBox(Prompt:="Número de colunas a inserir:", Title:="Colunas", Type:=1)
     If quantidadeDeColunasApagar <= 0 Then Exit Sub
 
-    '=== Encontra a coluna DESCRIÇÃO - MEMORIAL DE CALCULO no MEMORIAL ===
     Dim colunaNaoApagarMemorial As Integer
     colunaNaoApagarMemorial = 0
 
     Dim ultimaColunaMemorialDetectada As Integer
-    ultimaColunaMemorialDetectada = memorial.Cells(25, memorial.Columns.Count).End(xlToLeft).Column ' Detecta a última coluna preenchida
 
-    For i = 1 To ultimaColunaMemorialDetectada
-        Dim valorCelulaMemorial As String
-        
-        If memorial.Cells(25, i).MergeCells Then
-            valorCelulaMemorial = Trim(CStr(memorial.Cells(25, i).MergeArea.Cells(1, 1).Value))
-        Else
-            valorCelulaMemorial = Trim(CStr(memorial.Cells(25, i).Value))
-        End If
-        
-        If StrComp(valorCelulaMemorial, "NÃO APAGAR", vbTextCompare) = 0 Then
-            colunaNaoApagarMemorial = i
-            Exit For
-        End If
-    Next i
-
-    If colunaNaoApagarMemorial = 0 Then Err.Raise vbObjectError + 2, , "Não foi encontrada a coluna 'NÃO APAGAR' no MEMORIAL."
-    colunaDescMemorialDeCalc = colunaNaoApagarMemorial - 3
-
+    '=== Encontra a coluna "DESCRIÇÃO - MEMORIAL DE CALCULO" no MEMORIAL ===
     'Apaga colunas no MEMORIAL
     For i = 1 To quantidadeDeColunasApagar
+        ultimaColunaMemorialDetectada = memorial.Cells(25, memorial.Columns.Count).End(xlToLeft).Column ' Detecta a última coluna preenchida
+
+        For k = 1 To ultimaColunaMemorialDetectada
+            Dim valorCelulaMemorial As String
+            
+            If memorial.Cells(25, k).MergeCells Then
+                valorCelulaMemorial = Trim(CStr(memorial.Cells(25, k).MergeArea.Cells(1, 1).Value))
+            Else
+                valorCelulaMemorial = Trim(CStr(memorial.Cells(25, k).Value))
+            End If
+            
+            If StrComp(valorCelulaMemorial, "NÃO APAGAR", vbTextCompare) = 0 Then
+                colunaNaoApagarMemorial = k
+                Exit For
+            End If
+        Next k
+
+        If colunaNaoApagarMemorial = 0 Then Err.Raise vbObjectError + 2, , "Não foi encontrada a coluna 'NÃO APAGAR' no MEMORIAL."
+        colunaDescMemorialDeCalc = colunaNaoApagarMemorial - 3
+
         memorial.Columns(colunaDescMemorialDeCalc - 1).Delete Shift:=xlToLeft
     Next i
 
+    Dim colunaNaoApagarCronograma As Integer
+    colunaNaoApagarCronograma = 0
+
     For i = 1 To quantidadeDeColunasApagar
-
-        '=== Encontra a coluna TOTAL COM BDI no CRONOGRAMA ===
-        Dim colunaNaoApagarCronograma As Integer
-        colunaNaoApagarCronograma = 0
-
+        '=== Encontra a coluna "NÃO APAGAR" e "TOTAL COM BDI no CRONOGRAMA" ===
         Dim ultimaColunaCronogramaDetectada As Integer
         ultimaColunaCronogramaDetectada = cronograma.Cells(51, cronograma.Columns.Count).End(xlToLeft).Column ' Detecta a última coluna preenchida
 
@@ -101,7 +101,7 @@ Sub removerColunas()
         'Deleta as últimas colunas (quantidadeDeColunasApagar) tendo como base a
         'colunaCronogramaTotalComBDI para achar as colunas a serem excluídas
         cronograma.Columns(colunaCronogramaTotalComBDI - 1).Delete Shift:=xlToLeft
-        cronograma.Columns(colunaCronogramaTotalComBDI - 1).Delete Shift:=xlToLeft
+        cronograma.Columns(colunaCronogramaTotalComBDI - 2).Delete Shift:=xlToLeft
     Next i
 
     Finalizar:

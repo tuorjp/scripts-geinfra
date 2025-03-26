@@ -77,9 +77,9 @@ Sub adicionarColuna()
     'Insere colunas no MEMORIAL
     For i = 1 To quantidadeDeColunasInserir
         'Insere a coluna nova
-        memorial.Columns(colunaDescMemorialDeCalc - 1).Insert Shift:=xlToRight
+        memorial.Columns(colunaDescMemorialDeCalc).Insert Shift:=xlToRight
         'Copia a formatação da coluna padrão
-        memorial.Range("A:A").Copy Destination:=memorial.Cells(51, colunaDescMemorialDeCalc - 1).EntireColumn
+        memorial.Range("A:A").Copy Destination:=memorial.Cells(51, colunaDescMemorialDeCalc).EntireColumn
     Next i
 
     For i = 1 To quantidadeDeColunasInserir
@@ -109,16 +109,16 @@ Sub adicionarColuna()
         If colunaNaoApagarCronograma = 0 Then Err.Raise vbObjectError + 3, , "Não foi encontrada a coluna 'NÃO APAGAR' no CRONOGRAMA."
         colunaCronogramaTotalComBDI = colunaNaoApagarCronograma - 3
 
-        cronograma.Columns(colunaCronogramaTotalComBDI - 1).Insert Shift:=xlToRight
-        cronograma.Columns(colunaCronogramaTotalComBDI - 1).Insert Shift:=xlToRight
+        cronograma.Columns(colunaCronogramaTotalComBDI).Insert Shift:=xlToRight
+        cronograma.Columns(colunaCronogramaTotalComBDI).Insert Shift:=xlToRight
         
         'Copia o conteúdo e formatação
         rangeFormatadaCronograma.Copy
-        cronograma.Cells(51, colunaCronogramaTotalComBDI - 1).PasteSpecial Paste:=xlPasteAll
+        cronograma.Cells(51, colunaCronogramaTotalComBDI).PasteSpecial Paste:=xlPasteAll
 
         'Copia o tamanho das colunas
         cronograma.Columns(rangeFormatadaCronograma.Column).Copy
-        cronograma.Columns(colunaCronogramaTotalComBDI - 1).PasteSpecial Paste:=xlPasteColumnWidths
+        cronograma.Columns(colunaCronogramaTotalComBDI).PasteSpecial Paste:=xlPasteColumnWidths
     Next i
 
     Finalizar:

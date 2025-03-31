@@ -13,11 +13,26 @@ Sub insereFormulaRastreamento()
     Set memorial = ThisWorkbook.Sheets("MEMORIAL ORÇ")
     Set cronograma = ThisWorkbook.Sheets("CRONOGRAMA")
 
-    'Define o intervalo de linhas de interesse
-    ultimaLinhaMemorial = memorial.Range("B:B").Find("LAST ROW", LookAt:=xlWhole, SearchDirection:=xlPrevious, SearchOrder:=xlByRows).Row - 1
-    ultimaLinhaCronograma = cronograma.Cells(cronograma.Rows.Count, 8).End(xlUp).Row
+    ' Encontra a última linha válida no Memorial (antes da linha "LAST ROW")
+    Dim ultimaLinha As Range
+    Set ultimaLinha = memorial.Range("B:B").Find("LAST ROW", LookAt:=xlWhole, SearchDirection:=xlPrevious, SearchOrder:=xlByRows)
+    If Not ultimaLinha Is Nothing Then
+        ultimaLinhaMemorial = ultimaLinha.Row - 1
+    Else
+        MsgBox "Erro: 'LAST ROW' não encontrada no Memorial!", vbExclamation
+        Exit Sub
+    End If
 
-    'Encontra as colunas de interesse no Memorial
+    ' Encontra a última linha válida no Cronograma (antes da linha "LAST ROW")
+    Set ultimaLinha = cronograma.Range("G:G").Find("LAST ROW", LookAt:=xlWhole, SearchDirection:=xlPrevious, SearchOrder:=xlByRows)
+    If Not ultimaLinha Is Nothing Then
+        ultimaLinhaCronograma = ultimaLinha.Row - 1
+    Else
+        MsgBox "Erro: 'LAST ROW' não encontrada no Cronograma!", vbExclamation
+        Exit Sub
+    End If
+
+    ' Encontra as colunas de interesse no Memorial
     For colunaMemorial = 1 To memorial.Cells(25, memorial.Columns.Count).End(xlToLeft).Column
         Dim valorCelula As String
 
@@ -34,31 +49,32 @@ Sub insereFormulaRastreamento()
         End If
     Next colunaMemorial
 
-    'Loop pelas colunas de interesse
+    ' Loop pelas colunas de interesse
     For colunaMemorial = colunaQTD To colunaDescricaoMemorial
         colunaCronograma = (colunaMemorial - colunaQTD) * 2 + 17  ' Inicia na coluna Q (17)
         For linhaCronograma = 55 To ultimaLinhaCronograma Step 2
 
-            'Verifica o número da linha correspondente no Memorial a partir da coluna H (número 8)
+            ' Verifica o número da linha correspondente no Memorial a partir da coluna H (número 8)
             Dim linhaMemorial As Integer
             If cronograma.Cells(linhaCronograma, 8).MergeCells Then
                 linhaMemorial = cronograma.Cells(linhaCronograma, 8).MergeArea.Cells(1, 1).Value
             Else
                 linhaMemorial = cronograma.Cells(linhaCronograma, 8).Value
             End If
-            linhaMemorial = cronograma.Cells(linhaCronograma, 8).Value
 
-            Debug.Print "Linha MEMORIAL: " & linhaMemorial & ", Coluna MEMORIAL: " & colunaMemorial
-            Debug.Print "Linha CRONOGRAMA: " & linhaCronograma & ", Coluna CRONOGRAMA: " & colunaCronograma
-
-            'Verifica se há um número válido no cronograma
+            ' Verifica se há um número válido no cronograma
             If IsNumeric(linhaMemorial) And linhaMemorial >= 28 And linhaMemorial <= ultimaLinhaMemorial Then
 
-                'Verifica se a célula do Memorial tem valor
+                ' Verifica se a célula do Memorial tem valor
                 If Trim(CStr(memorial.Cells(linhaMemorial, colunaMemorial).Value)) <> "" Then
+                    Debug.Print "Linha MEMORIAL LOOP: " & linhaMemorial & ", Coluna MEMORIAL: " & colunaMemorial
+                    Debug.Print "Linha CRONOGRAMA LOOP: " & linhaCronograma & ", Coluna CRONOGRAMA: " & colunaCronograma
+                    Debug.Print "Inserindo fórmula em cronograma: " & linhaCronograma & ":" & colunaCronograma
+                    Debug.Print "Value: " & linhaMemorial
+                    Debug.Print " "
 
-                    'Insere a fórmula apenas na primeira linha do bloco
-                    cronograma.Cells(linhaCronograma, colunaCronograma).Formula = _
+                    ' Insere a fórmula apenas na primeira linha do bloco
+                    'cronograma.Cells(linhaCronograma, colunaCronograma).formula = _
                         "='MEMORIAL ORÇ'!" & memorial.Cells(linhaMemorial, colunaMemorial).Address(False, False)
                 End If
             End If

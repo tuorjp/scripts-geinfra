@@ -120,54 +120,6 @@ Sub adicionarColuna()
         cronograma.Columns(rangeFormatadaCronograma.Column).Copy
         cronograma.Columns(colunaCronogramaTotalComBDI).PasteSpecial Paste:=xlPasteColumnWidths
 
-        ' 'Insere fórmulas de rastreamento
-        ' Dim linha As Integer
-        ' Dim colunaMemorial As Integer
-        ' Dim colunaCronograma As Integer
-
-        ' 'Define o intervalo de linhas de interesse
-        ' Dim ultimaLinhaMemorial As Integer
-        ' ultimaLinhaMemorial = memorial.Range("B:B").Find("LAST ROW", LookAt:=xlWhole, SearchDirection:=xlPrevious, SearchOrder:=xlByRows).Row - 1
-
-        ' 'Encontra as colunas de interesse no Memorial
-        ' Dim colunaQTD As Integer, colunaDescricaoMemorial As Integer
-        ' For colunaMemorial = 1 To memorial.Cells(25, memorial.Columns.Count).End(xlToLeft).Column
-        '     Dim valorCelula As String
-
-        '     If memorial.Cells(25, colunaMemorial).MergeCells Then
-        '         valorCelula = Trim(CStr(memorial.Cells(25, colunaMemorial).MergeArea.Cells(1, 1).Value))
-        '     Else
-        '         valorCelula = Trim(CStr(memorial.Cells(25, colunaMemorial).Value))
-        '     End If
-
-        '     If valorCelula = "QTD" Then
-        '         colunaQTD = colunaMemorial
-        '     ElseIf valorCelula = "DESCRIÇÃO - MEMORIAL DE CALCULO" Then
-        '         colunaDescricaoMemorial = colunaMemorial
-        '     End If
-        ' Next colunaMemorial
-
-        ' 'Loop pelas colunas de interesse
-        ' colunaCronograma = colunaCronogramaTotalComBDI - (2 * (colunaDescricaoMemorial - colunaQTD))
-        ' For colunaMemorial = colunaQTD To colunaDescricaoMemorial
-        '     For linha = 28 To ultimaLinhaMemorial
-                
-        '         Debug.Print "Linha: " & linha & ", Coluna Memorial: " & colunaMemorial
-        '         Debug.Print "Endereço Memorial: " & memorial.Cells(linha, colunaMemorial).Address(False, False)
-
-        '         'Rastreia sempre, substituindo valores vazios por 0
-        '         Dim formula As String
-                
-        '         formula = "=IF('MEMORIAL ORÇ'!" & memorial.Cells(linha, colunaMemorial).Address(False, False) & "="" "",0,'MEMORIAL ORÇ'!" & memorial.Cells(linha, colunaMemorial).Address(False, False) & ")"
-
-        '         Debug.Print "Fórmula: " & formula
-
-        '         cronograma.Cells(linha + 27, colunaCronograma).Formula = formula
-            
-        '     Next linha
-        '     colunaCronograma = colunaCronograma + 2
-        ' Next colunaMemorial
-    
     Next i
 
     Finalizar:

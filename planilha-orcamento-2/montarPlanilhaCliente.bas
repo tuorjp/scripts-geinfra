@@ -64,7 +64,6 @@ Sub montarPlanilhaCliente()
             ' Copia os formatos das células, incluindo mesclagens
             abaOrigem.Cells.Copy
             abaDestino.Cells.PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
-            abaDestino.Cells.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
 
             ' Agora mescla as células conforme a aba de origem
             For Each cell In abaOrigem.UsedRange
@@ -74,7 +73,7 @@ Sub montarPlanilhaCliente()
             Next cell
 
             ' Converte as fórmulas em valores apenas para "EST. DE CUSTOS"
-            If nomeAba = "EST. DE CUSTOS" Then
+            If nomeAba = "EST. DE CUSTOS" Or nomeAba = "MEMORIAL ORÇ" Or nomeAba = "CRONOGRAMA" Then
                 ' Desmescla todas as células antes de colar os valores
                 abaDestino.Cells.UnMerge
                 

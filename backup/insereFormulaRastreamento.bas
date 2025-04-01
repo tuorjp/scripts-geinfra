@@ -15,18 +15,6 @@ Sub insereFormulaRastreamento()
     Set memorial = ThisWorkbook.Sheets("MEMORIAL ORÇ")
     Set cronograma = ThisWorkbook.Sheets("CRONOGRAMA")
 
-    ' Obtém o tipo de entrada do usuário da ComboBox
-    Dim cmb As Object
-    Set cmb = memorial.OLEObjects("cmbTipoValor").Object
-    Dim tipoValor As String
-    tipoValor = Trim(LCase(cmb.Value))
-
-    ' Se o tipo não for válido, exibe erro e encerra
-    If tipoValor <> "quantidade" And tipoValor <> "porcentagem" Then
-        MsgBox "Erro: Escolha 'QUANTIDADE' ou 'PORCENTAGEM' na ComboBox!", vbExclamation
-        Exit Sub
-    End If
-
     ' Encontra a última linha válida no Memorial (antes da linha "LAST ROW")
     Dim ultimaLinha As Range
     Set ultimaLinha = memorial.Range("B:B").Find("LAST ROW", LookAt:=xlWhole, SearchDirection:=xlPrevious, SearchOrder:=xlByRows)
@@ -81,45 +69,21 @@ Sub insereFormulaRastreamento()
                 linhaMemorial = cronograma.Cells(linhaCronograma, 8).Value
             End If
 
+            Debug.Print " "
+            Debug.Print "Linha MEMORIAL: " & linhaMemorial & ", Coluna MEMORIAL: " & colunaMemorial
+            Debug.Print "Linha CRONOGRAMA: " & linhaCronograma & ", Coluna CRONOGRAMA: " & colunaCronograma
+
             ' Verifica se a linha no Memorial é válida
             If IsNumeric(linhaMemorial) And linhaMemorial >= 28 And linhaMemorial <= ultimaLinhaMemorial Then
-                ' Obtém o valor digitado no Memorial
-                Dim valorMemorial As Double
-                valorMemorial = memorial.Cells(linhaMemorial, colunaMemorial).Value
-
                 ' Verifica se há um valor válido
-                If Trim(CStr(valorMemorial)) <> "" Then
-                    Dim valorFinal As Double
+                If Trim(CStr(memorial.Cells(linhaMemorial, colunaMemorial).Value)) <> "" Then
+                    Debug.Print "Linha MEMORIAL LOOP: " & linhaMemorial & ", Coluna MEMORIAL: " & colunaMemorial
+                    Debug.Print "Linha CRONOGRAMA LOOP: " & linhaCronograma & ", Coluna CRONOGRAMA: " & colunaCronograma
+                    Debug.Print "Inserindo fórmula em cronograma: " & linhaCronograma & ":" & colunaCronograma
 
-                    ' Se o tipo for quantidade, divide pelo valor da coluna H (QTD) para obter a porcentagem
-                    If tipoValor = "quantidade" Then
-                        Dim valorQtd As Double
-                        valorQtd = memorial.Cells(linhaMemorial, 8).Value ' Coluna H
-
-                        ' Evita erro de divisão por zero
-                        If valorQtd <> 0 Then
-                            valorFinal = valorMemorial / valorQtd
-                        Else
-                            valorFinal = 0 ' Define 0 caso o valor em QTD seja 0
-                        End If
-                    Else
-                        ' Se for porcentagem, mantém o valor original
-                        valorFinal = valorMemorial
-                    End If
-
-                    ' Exibe os valores no Debug
-                    Debug.Print "Linha MEMORIAL: " & linhaMemorial & ", Coluna MEMORIAL: " & colunaMemorial
-                    Debug.Print "Linha CRONOGRAMA: " & linhaCronograma & ", Coluna CRONOGRAMA: " & colunaCronograma
-                    Debug.Print "Valor original: " & valorMemorial & " | Valor final: " & valorFinal
-
-                    ' Insere o valor no Cronograma como porcentagem (se for quantidade)
-                    If tipoValor = "quantidade" Then
-                        cronograma.Cells(linhaCronograma, colunaCronograma).Value = valorFinal
-                        cronograma.Cells(linhaCronograma, colunaCronograma).NumberFormat = "0.00%" ' Exibe como porcentagem
-                    Else
-                        cronograma.Cells(linhaCronograma, colunaCronograma).Formula = _
-                            "='MEMORIAL ORÇ'!" & memorial.Cells(linhaMemorial, colunaMemorial).Address(False, False)
-                    End If
+                    ' Insere a fórmula apenas na primeira linha do bloco
+                    cronograma.Cells(linhaCronograma, colunaCronograma).Formula = _
+                        "='MEMORIAL ORÇ'!" & memorial.Cells(linhaMemorial, colunaMemorial).Address(False, False)
                 End If
             End If
         Next linhaCronograma

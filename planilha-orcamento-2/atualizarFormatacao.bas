@@ -66,5 +66,4 @@ Sub atualizarFormatacao()
         intervaloLinha6.NumberFormat = "0.00%"
     End If
 
-    MsgBox "Formatos atualizados conforme a seleção!", vbInformation
 End Sub

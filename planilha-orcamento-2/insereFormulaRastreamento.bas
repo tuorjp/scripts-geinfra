@@ -125,5 +125,4 @@ Sub insereFormulaRastreamento()
         Next linhaCronograma
     Next colunaMemorial
 
-    MsgBox "Rastreamento concluído!"
 End Sub

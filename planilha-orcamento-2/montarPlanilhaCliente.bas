@@ -11,7 +11,7 @@ Sub montarPlanilhaCliente()
     Dim cell As Range
 
     ' Define o caminho da planilha de destino
-    caminhoPlanilhaDestino = "C:\teste\Arquivo.xlsx"
+    caminhoPlanilhaDestino = "C:\JP\vba-planilhas\Licitante.xlsx"
 
     ' Define a planilha de origem
     Set planilhaOrigem = ThisWorkbook
@@ -73,7 +73,7 @@ Sub montarPlanilhaCliente()
             Next cell
 
             ' Converte as fórmulas em valores apenas para "EST. DE CUSTOS"
-            If nomeAba = "EST. DE CUSTOS" Or nomeAba = "MEMORIAL ORÇ" Or nomeAba = "CRONOGRAMA" Then
+            If nomeAba = "CAPA" Or nomeAba = "EST. DE CUSTOS" Or nomeAba = "MEMORIAL ORÇ" Or nomeAba = "CRONOGRAMA" Then
                 ' Desmescla todas as células antes de colar os valores
                 abaDestino.Cells.UnMerge
                 
@@ -89,18 +89,119 @@ Sub montarPlanilhaCliente()
                 Next cell
             End If
 
-            ' Bloquear todas as células da aba
-            abaDestino.Cells.Locked = True
-            abaDestino.Protect Password:="UEG", AllowFiltering:=True
-
             Application.CutCopyMode = False
         Else
             MsgBox "A aba '" & nomeAba & "' não foi encontrada na planilha de origem.", vbExclamation
         End If
     Next i
 
-    ' Salva e fecha a planilha de destino
+    For index2 = LBound(abasParaCopiar) To UBound(abasParaCopiar)
+        
+        nomeAba = abasParaCopiar(index2)
+        Set abaDestino = planilhaDestino.Sheets(nomeAba)
+
+        Dim mergeInfo As Collection
+        Set mergeInfo = New Collection
+        Dim cel As Range
+        Dim mergeAddr As Variant
+
+        Select Case nomeAba
+            Case "MEMORIAL ORÇ"
+                ' Salvar os merges
+                For Each cel In abaDestino.UsedRange
+                    If cel.MergeCells Then
+                        mergeAddr = cel.MergeArea.Address
+                        On Error Resume Next
+                        mergeInfo.Add mergeAddr, mergeAddr ' Evita duplicados
+                        On Error GoTo 0
+                    End If
+                Next cel
+
+                ' Remover todos os merges
+                abaDestino.Cells.UnMerge
+
+                ' Desbloquear colunas específicas
+                Dim ultimaColMemorial As Integer
+                ultimaColMemorial = EncontrarColuna(abaDestino, "DESCRIÇÃO - MEMORIAL DE CALCULO")
+                If ultimaColMemorial > 1 Then
+                    abaDestino.Range("H:" & ColunaParaLetra(ultimaColMemorial - 1)).Locked = False
+                End If
+
+                ' Reaplicar os merges
+                For Each mergeAddr In mergeInfo
+                    abaDestino.Range(mergeAddr).Merge
+                Next mergeAddr
+
+                abaDestino.Protect Password:="UEG", AllowFiltering:=True
+
+            Case "EST. DE CUSTOS"
+                ' Mesma lógica
+                Set mergeInfo = New Collection
+                For Each cel In abaDestino.UsedRange
+                    If cel.MergeCells Then
+                        mergeAddr = cel.MergeArea.Address
+                        On Error Resume Next
+                        mergeInfo.Add mergeAddr, mergeAddr
+                        On Error GoTo 0
+                    End If
+                Next cel
+
+                abaDestino.Cells.UnMerge
+                abaDestino.Range("Q:AC").Locked = False
+                For Each mergeAddr In mergeInfo
+                    abaDestino.Range(mergeAddr).Merge
+                Next mergeAddr
+
+                abaDestino.Protect Password:="UEG", AllowFiltering:=True
+
+            Case "CRONOGRAMA"
+                Set mergeInfo = New Collection
+                For Each cel In abaDestino.UsedRange
+                    If cel.MergeCells Then
+                        mergeAddr = cel.MergeArea.Address
+                        On Error Resume Next
+                        mergeInfo.Add mergeAddr, mergeAddr
+                        On Error GoTo 0
+                    End If
+                Next cel
+
+                abaDestino.Cells.UnMerge
+                Dim ultimaColCronograma As Integer
+                ultimaColCronograma = EncontrarColuna(abaDestino, "TOTAL COM")
+                If ultimaColCronograma > 1 Then
+                    abaDestino.Range("Q:" & ColunaParaLetra(ultimaColCronograma - 1)).Locked = False
+                End If
+
+                For Each mergeAddr In mergeInfo
+                    abaDestino.Range(mergeAddr).Merge
+                Next mergeAddr
+
+                abaDestino.Protect Password:="UEG", AllowFiltering:=True
+        End Select
+    Next index2
+
+    Application.DisplayAlerts = False
+    planilhaDestino.Sheets("Planilha1").Delete
+    Application.DisplayAlerts = True
+
+    ' Salva
     planilhaDestino.Save
-    planilhaDestino.Close
-    MsgBox "Cópia concluída com sucesso!", vbInformation
 End Sub
+
+' ----------------------------------------------
+' FUNÇÃO PARA ENCONTRAR A COLUNA DE UM CABEÇALHO
+Function EncontrarColuna(ws As Worksheet, valor As String) As Integer
+    Dim cel As Range
+    Set cel = ws.Rows(1).Find(valor, LookAt:=xlWhole, SearchOrder:=xlByColumns)
+    If Not cel Is Nothing Then
+        EncontrarColuna = cel.Column
+    Else
+        EncontrarColuna = 0 ' Retorna 0 se não encontrar
+    End If
+End Function
+
+' -----------------------------------------------
+' FUNÇÃO PARA CONVERTER NÚMERO DA COLUNA EM LETRA
+Function ColunaParaLetra(colNum As Integer) As String
+    ColunaParaLetra = Split(Cells(1, colNum).Address, "$")(1)
+End Function

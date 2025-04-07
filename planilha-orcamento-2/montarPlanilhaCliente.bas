@@ -192,12 +192,21 @@ End Sub
 ' FUNÇÃO PARA ENCONTRAR A COLUNA DE UM CABEÇALHO
 Function EncontrarColuna(ws As Worksheet, valor As String) As Integer
     Dim cel As Range
-    Set cel = ws.Rows(1).Find(valor, LookAt:=xlWhole, SearchOrder:=xlByColumns)
-    If Not cel Is Nothing Then
-        EncontrarColuna = cel.Column
-    Else
-        EncontrarColuna = 0 ' Retorna 0 se não encontrar
-    End If
+    Dim rngBusca As Range
+
+    ' Define o intervalo de busca como a área usada da planilha
+    Set rngBusca = ws.UsedRange
+
+    ' Percorre cada célula procurando o valor
+    For Each cel In rngBusca
+        If Trim(Replace(CStr(cel.Value), Chr(10), " ")) = valor Then
+            EncontrarColuna = cel.Column
+            Exit Function
+        End If
+    Next cel
+
+    ' Retorna 0 se não encontrar
+    EncontrarColuna = 0
 End Function
 
 ' -----------------------------------------------

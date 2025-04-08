@@ -88,7 +88,7 @@ Sub insereFormulaRastreamento()
                 valorMemorial = memorial.Cells(linhaMemorial, colunaMemorial).Value
 
                 ' Verifica se há um valor válido
-                If Trim(CStr(valorMemorial)) <> "" Then
+                If Trim(CStr(valorMemorial)) <> "" And valorMemorial <> 0 Then
                     Dim valorFinal As Double
 
                     ' Se o tipo for quantidade, divide pelo valor da coluna H (QTD) para obter a porcentagem

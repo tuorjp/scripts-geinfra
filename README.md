@@ -1,6 +1,10 @@
 
 # Scripts VBA e Apps Script feitos para a GEINFRA
 
+# Planilha
+
+Utilizar a planilha na versão 0.6.1 ou maior
+
 ## VBA
 
 Os scripts VBA são para a planilha orçamentária. Os botões tem o mesmo nome das funções.

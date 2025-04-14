@@ -1,4 +1,4 @@
-Sub aplicarFormatacaoCondicional()
+Sub aplicarFormatacaoCondicionalNaSomaDaQuantidadeNoMemorial()
     Dim ws As Worksheet
     Dim cmb As Object
     Dim tipoValor As String

@@ -1,4 +1,4 @@
-Sub insereFormulaRastreamento()
+Sub insereFormulaRastreamentoNoCronograma()
     Dim memorial As Worksheet
     Dim cronograma As Worksheet
 

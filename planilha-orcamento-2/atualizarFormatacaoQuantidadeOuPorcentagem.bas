@@ -1,4 +1,4 @@
-Sub atualizarFormatacao()
+Sub atualizarFormatacaoQuantidadeOuPorcentagem()
     Dim memorial As Worksheet
     Set memorial = ThisWorkbook.Sheets("MEMORIAL ORÇ")
 

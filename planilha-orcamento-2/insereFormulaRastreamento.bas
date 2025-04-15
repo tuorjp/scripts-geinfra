@@ -1,4 +1,5 @@
-Sub insereFormulaRastreamentoNoCronograma()
+' Insere fórmulas de rastreamento no cronograma com base nos valores do memorial
+Sub insereFormulaRastreamento()
     Dim memorial As Worksheet
     Dim cronograma As Worksheet
 

@@ -1,4 +1,5 @@
-Sub atualizarFormatacaoQuantidadeOuPorcentagem()
+' Atualiza a formatação de células no Excel com base na seleção do usuário
+Sub atualizarFormatacao()
     Dim memorial As Worksheet
     Set memorial = ThisWorkbook.Sheets("MEMORIAL ORÇ")
 

@@ -1,4 +1,6 @@
-Sub aplicarFormatacaoCondicionalNaSomaDaQuantidadeNoMemorial()
+' Aplica a formatação condicional na coluna H do Memorial de Cálculo
+' com base na soma das células à direita, comparando com o valor da célula H correspondente.
+Sub aplicarFormatacaoCondicional()
     Dim ws As Worksheet
     Dim cmb As Object
     Dim tipoValor As String
